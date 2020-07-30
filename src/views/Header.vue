@@ -1,6 +1,7 @@
 <template>
-  <div id="app">
-    <router-view />
+  <div>
+    <BaseNav />
+    <router-view></router-view>
   </div>
 </template>
 
@@ -8,10 +9,13 @@
 import { defineComponent } from "@vue/composition-api";
 
 export default defineComponent({
+  name: "Header",
   setup() {
-    const name = "App";
+    const name = "Meatasolutions";
 
     return { name };
   },
 });
 </script>
+
+<style></style>

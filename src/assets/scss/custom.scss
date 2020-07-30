@@ -1,0 +1,14 @@
+// Custom.scss
+//overide some bootstrap scss variables
+$enable-shadows : true;
+$enable-gradients : true;
+
+
+//Bootstrap scss
+@import "../../../node_modules/bootstrap/scss/bootstrap.scss";
+
+//Argon scss
+
+//BootstrapVue scss
+@import  "../../../node_modules/bootstrap-vue/src/index.scss";
+
