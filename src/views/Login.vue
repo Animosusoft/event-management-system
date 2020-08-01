@@ -47,6 +47,9 @@
                       required
                     ></b-form-input>
                   </b-input-group>
+                  <div v-if="!authorized" class="text-warning">
+                    <b-card-text>You are not Authorized To Login Into Metasolutions</b-card-text>
+                  </div>
                 </b-form-group>
                 <b-button type="submit" variant="info" squared>Login</b-button>
               </b-form>
@@ -64,12 +67,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent, ref } from "@vue/composition-api";
 import loginstore from "@/store/loginstore";
 
 export default defineComponent({
   setup(props, { root: { $router } }) {
     const store = loginstore;
+
+    const authorized = ref(true);
 
     const login = async () => {
       const login_data = new FormData();
@@ -86,7 +91,8 @@ export default defineComponent({
             $router.push({ name: "Home" });
           } else {
             loginValidationState.json().then((loginErrorState) => {
-              throw new Error(loginErrorState);
+              authorized.value = false;
+              throw Error(loginErrorState);
             });
           }
         })
@@ -94,7 +100,7 @@ export default defineComponent({
           throw error;
         });
     };
-    return { store, login };
+    return { store, login, authorized };
   },
 });
 </script>

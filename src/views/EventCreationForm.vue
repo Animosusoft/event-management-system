@@ -104,7 +104,6 @@
                   value-field="organizer_id"
                   text-field="name"
                   :class="validationState($v.form.organizerID)"
-                  @change="logevent($event)"
                 >
                   <template v-slot:first>
                     <b-form-select-option value disabled>Select Organizer name</b-form-select-option>
@@ -210,7 +209,7 @@ export default defineComponent({
             $router.push({ path: "eventdetails" });
           } else {
             responseFromServer.json().then((jsonServerResponse) => {
-              throw new Error(jsonServerResponse);
+              throw Error(jsonServerResponse);
             });
           }
         })
