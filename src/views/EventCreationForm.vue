@@ -66,6 +66,25 @@
                   </b-form-group>
                 </b-col>
               </b-form-row>
+
+              <b-form-group id="OrganizerSelect" label="Organizer Name" label-for="organizerSelect">
+                <b-form-select
+                  id="organizerSelect"
+                  :options="form.organizersDetails"
+                  v-model="$v.form.organizerID.$model"
+                  value-field="organizer_id"
+                  text-field="name"
+                  :class="validationState($v.form.organizerID)"
+                >
+                  <template v-slot:first>
+                    <b-form-select-option value disabled>Select Organizer name</b-form-select-option>
+                  </template>
+                </b-form-select>
+                <b-form-invalid-feedback
+                  v-if="!$v.form.organizerID.required"
+                >Please select the Name of the Organizer</b-form-invalid-feedback>
+              </b-form-group>
+
               <b-form-group id="EventType" label="Event Type" label-for="eventType">
                 <b-form-select
                   v-model="$v.form.eventType.$model"
@@ -79,6 +98,7 @@
                 </b-form-select>
                 <b-form-invalid-feedback v-if="!$v.form.eventType.require">This field is required</b-form-invalid-feedback>
               </b-form-group>
+
               <b-form-group id="eventDetails_group" label="Event Details" label-for="eventDetails">
                 <b-form-textarea
                   id="eventDetails"
@@ -96,22 +116,6 @@
                   Please The Organizer Name Must Be A Minimum of
                   {{ $v.form.eventDetails.$params.minLength.min }} word
                 </b-form-invalid-feedback>
-              </b-form-group>
-              <b-form-group id="OrganizerSelect" label="Organizer Name">
-                <b-form-select
-                  :options="form.organizersDetails"
-                  v-model="$v.form.organizerID.$model"
-                  value-field="organizer_id"
-                  text-field="name"
-                  :class="validationState($v.form.organizerID)"
-                >
-                  <template v-slot:first>
-                    <b-form-select-option value disabled>Select Organizer name</b-form-select-option>
-                  </template>
-                  <b-form-invalid-feedback
-                    v-if="!$v.form.organizerID.required"
-                  >Please select the Name of the Organizer</b-form-invalid-feedback>
-                </b-form-select>
               </b-form-group>
               <b-form-group id="eventImage_group" label="Event Image" label-for="eventImage">
                 <b-form-file
@@ -135,6 +139,7 @@
         </b-card>
       </b-row>
     </b-container>
+    <BaseFooter />
   </div>
 </template>
 
@@ -144,7 +149,7 @@ import { validationMixin } from "vuelidate";
 import { validationrules } from "../services/validations";
 import BaseInput from "../components/BaseInput.vue";
 import utilities from "../services/formutility";
-import { formstore } from "../store/formstore";
+import { formstore, authstore } from "../store/index";
 import Flatpickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
 
@@ -166,6 +171,10 @@ export default defineComponent({
         "https://metasolution-alpha.herokuapp.com/api/v1/organizers",
         {
           method: "get",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+            Authorization: `Bearer ${authstore.token}`,
+          },
           mode: "cors",
         }
       )
@@ -187,18 +196,19 @@ export default defineComponent({
 
     const submitForm = async () => {
       const formdata = new FormData();
-      formdata.set("title", formstore.eventTitle);
-      formdata.set("end", formstore.end);
-      formdata.set("start", formstore.start);
+      formdata.set("event_title", formstore.eventTitle);
       formdata.set("location", formstore.eventLocation);
-      formdata.set("discription", formstore.eventDetails);
-      formdata.set("type", formstore.eventType);
+      formdata.set("end_date", formstore.end);
+      formdata.set("start_date", formstore.start);
       formdata.set("url", formstore.eventImage);
-      await fetch("https://metasolution-alpha.herokuapp.com/api/v1/event", {
+      formdata.set("description", formstore.eventDetails);
+      formdata.set("event_type", formstore.eventType);
+      await fetch("https://metasolution-alpha.herokuapp.com/api/v1/events", {
         method: "post",
         mode: "cors",
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${authstore.token}`,
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Headers": "*",
         },
@@ -209,7 +219,7 @@ export default defineComponent({
             $router.push({ path: "eventdetails" });
           } else {
             responseFromServer.json().then((jsonServerResponse) => {
-              throw Error(jsonServerResponse);
+              console.log(jsonServerResponse);
             });
           }
         })
@@ -239,7 +249,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #background {
   background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
 }

@@ -13,7 +13,7 @@
             :img-src="require('../assets/imágenes/event_management.jpeg')"
             img-alt="Event Management Company Definition"
             img-height="auto"
-            img-width="40%"
+            img-width="30%"
             img-start
           >
             <b-card-header>Please Enter your username and password</b-card-header>
@@ -22,13 +22,13 @@
                 <b-form-group label="Username" label-for="admin_username">
                   <b-input-group>
                     <b-input-group-prepend is-text>
-                      <b-icon-envelope-open />
+                      <fa-icon :icon="['fas','envelope-open-text']" size="lg" />
                     </b-input-group-prepend>
                     <b-form-input
                       id="admin_username"
                       type="text"
                       v-model="store.username"
-                      placeholder="Admin Username"
+                      placeholder="Username"
                       required
                     ></b-form-input>
                   </b-input-group>
@@ -37,7 +37,7 @@
                 <b-form-group label="Password" label-for="admin_password">
                   <b-input-group>
                     <b-input-group-prepend is-text>
-                      <b-icon-shield-lock />
+                      <fa-icon :icon="['fas','unlock-alt']" size="lg" />
                     </b-input-group-prepend>
                     <b-form-input
                       id="admin_password"
@@ -68,7 +68,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "@vue/composition-api";
-import loginstore from "@/store/loginstore";
+import { loginstore, authstore } from "@/store/index";
 
 export default defineComponent({
   setup(props, { root: { $router } }) {
@@ -87,13 +87,13 @@ export default defineComponent({
         body: login_data,
       })
         .then((loginValidationState) => {
-          if (loginValidationState.status === 200) {
+          if (loginValidationState.status === 201) {
+            loginValidationState.json().then((data) => {
+              authstore.token = data.token;
+            });
             $router.push({ name: "Home" });
           } else {
-            loginValidationState.json().then((loginErrorState) => {
-              authorized.value = false;
-              throw Error(loginErrorState);
-            });
+            authorized.value = false;
           }
         })
         .catch((error: Error) => {
@@ -106,47 +106,49 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+/*
 @font-face {
   font-family: DancingScript;
   src: url("../assets/fuentes/DancingScript-VariableFont_wght.ttf");
 }
-
 @font-face {
   font-family: CrimsonPro;
   src: url("../assets/fuentes/CrimsonPro-VariableFont_wght.ttf");
-}
-@font-face {
-  font-family: Lemonada;
-  src: url("../assets/fuentes/Lemonada-VariableFont_wght.ttf");
 }
 @font-face {
   font-family: EBGaramond;
   src: url("../assets/fuentes/EBGaramond-VariableFont_wght.ttf");
 }
 @font-face {
-  font-family: GrenzeGotisch;
-  src: url("../assets/fuentes/GrenzeGotisch-VariableFont_wght.ttf");
-}
-@font-face {
   font-family: Oswald;
   src: url("../assets/fuentes/Oswald-VariableFont_wght.ttf");
+}
+ */
+@font-face {
+  font-family: Lemonada;
+  src: url("../assets/fuentes/Lemonada-VariableFont_wght.ttf");
+}
+@font-face {
+  font-family: GrenzeGotisch;
+  src: url("../assets/fuentes/GrenzeGotisch-VariableFont_wght.ttf");
 }
 
 main > header {
   font-family: GrenzeGotisch;
-  font-size: 4em;
-  line-height: 2em;
-  letter-spacing: 0.299em;
+  font-size: 2.7em;
+  line-height: 1em;
+  letter-spacing: 0.02em;
   font-style: normal;
-  font-variation-settings: "wdth" 700, "wght" 700;
-  @media screen and (max-width: 600px) {
-    font-size: 2em;
+  font-weight: 400;
+  @media screen and (min-width: 600px) {
+    font-size: 4em;
     line-height: 1.5em;
-    letter-spacing: 0.204em;
+    letter-spacing: 0.07em;
+    font-variation-settings: "wdth" 700, "wght" 500;
   }
 }
 $gradient_color: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-$gradient_color_1: linear-gradient(
+/*$gradient_color_1: linear-gradient(
   to right bottom,
   #20bdd4,
   #51adde,
@@ -183,7 +185,7 @@ $gradient_color_3: linear-gradient(
   #63bfff,
   #98aaff,
   #c293ee
-);
+);*/
 #admin_login {
   background-image: url(../assets/imágenes/event_management_company_definition.jpeg);
   background-repeat: no-repeat;
@@ -199,13 +201,13 @@ $gradient_color_3: linear-gradient(
 }
 .card-header,
 .card-title,
-.card-footer,
-.d-block {
+.card-footer {
   font-family: Lemonada;
   font-size: 1rem;
   line-height: 1;
 }
-.d-block {
+label.d-block {
+  font-family: Lemonada;
   text-align: start;
 }
 

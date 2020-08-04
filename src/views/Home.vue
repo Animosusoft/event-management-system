@@ -26,6 +26,7 @@
         :img-src="require('../assets/imágenes/home_carousel/nature.jpg')"
       ></b-carousel-slide>
     </b-carousel>
+    <BaseFooter />
   </div>
 </template>
 

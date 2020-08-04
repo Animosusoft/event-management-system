@@ -123,7 +123,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "@vue/composition-api";
-import { formstore } from "../store/formstore";
+import { formstore } from "../store/index";
 import utilities from "@/services/formutility";
 import Flatpickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";

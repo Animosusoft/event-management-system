@@ -1,6 +1,6 @@
 <template>
   <div class="form-group was-validated">
-    <label :for="label">{{ label }}</label>
+    <label :for="label" class="d-block">{{ label }}</label>
     <input
       :id="label"
       :type="type"
@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import { formstore } from "@/store/formstore";
+import { formstore } from "@/store/index";
 
 export default defineComponent({
   props: {
@@ -50,5 +50,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style></style>

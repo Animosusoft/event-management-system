@@ -16,7 +16,12 @@ const routes: Array<RouteConfig> = [
     component: () => import(/*webpackChunkName: "home"*/ "../views/Home.vue")
   },
   {
-    path: "/event",
+    path: "/organizer",
+    name: "CreateOrganizer",
+    component: () => import(/* webpackChunkName: "createorganizer"*/ "../views/CreateOrganizer.vue")
+  },
+  {
+    path: "/events",
     name: "CreateEvent",
     component: () => import(/*webpackChunkName: "createventform"*/ "../views/EventCreationForm.vue")
   },

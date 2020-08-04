@@ -1,4 +1,4 @@
-import { formstore } from "../store/formstore";
+import { formstore } from "../store/index";
 
 export default function utilities() {
   const createImage = (file: any) => {
@@ -25,8 +25,9 @@ export default function utilities() {
 
   const flatpickrconfig = {
     altInput: true,
+    altFormat: "F j,Y H:i K",
     enableTime: true,
-    dateFormat: "Y-m-d H:i",
+    dateFormat: "Z",
     minDate: today
   };
 
