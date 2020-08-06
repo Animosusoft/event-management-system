@@ -17,4 +17,4 @@ const formstore: Formdata = reactive({
   organizerName: ""
 });
 
-export { formstore };
+export default formstore;

@@ -2,6 +2,7 @@
   <div>
     <BaseNav />
     <router-view></router-view>
+    <BaseFooter />
   </div>
 </template>
 

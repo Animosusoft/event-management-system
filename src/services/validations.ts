@@ -1,5 +1,5 @@
 import { required, minLength } from "vuelidate/lib/validators";
-import { formstore } from "../store/formstore";
+import { formstore } from "../store/index";
 
 const validDate = () => {
   return formstore.end > formstore.start;
