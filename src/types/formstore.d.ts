@@ -9,15 +9,15 @@ interface OrganizerData extends Array<Organizer> {
 
 interface Formdata {
   eventTitle: string;
-  end: string;
-  start: string;
   eventLocation: string;
   eventDetails: string;
+  eventImage: File | string;
+  end: string;
+  start: string;
   eventType: string;
-  organizerID: number;
+  organizerID: string;
   organizersDetails: OrganizerData | [{}];
   organizerName: string;
-  eventImage: string;
 }
 
 export { OrganizerData, Formdata, Organizer };

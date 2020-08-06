@@ -36,12 +36,13 @@
                 ></b-form-input>
               </b-form-group>
               <b-form-group id="logo_group" label="logo" label-for="logo">
-                <b-form-input
+                <b-form-file
                   id="logo"
+                  accept="image/*"
                   v-model="store.logo"
-                  type="text"
-                  placeholder="eg.mokoshiw.png"
-                ></b-form-input>
+                  :state="Boolean(store.logo)"
+                  placeholder="select the logo"
+                ></b-form-file>
               </b-form-group>
               <b-form-group id="phone_group" label="Phone number" label-for="phone">
                 <b-form-input
@@ -60,9 +61,6 @@
                   placeholder="thermo@outlook.com"
                   required
                 ></b-form-input>
-              </b-form-group>
-              <b-form-group id="status_group" label="Organizer status" label-for="status">
-                <b-form-select id="status" v-model="store.status" :options="statusOptions" required></b-form-select>
               </b-form-group>
               <b-btn
                 type="submit"
@@ -89,13 +87,8 @@ export default defineComponent({
     const store = organizerstore;
 
     const organizerTypeOptions = [
-      { value: "organization", text: "Organization" },
-      { value: "person", text: "Personal" },
-    ];
-
-    const statusOptions = [
-      { value: "active", text: "active" },
-      { value: "not-active", text: "not Active" },
+      { value: "organization", text: "Organization Account" },
+      { value: "individual", text: "Individual Account" },
     ];
 
     const createOrganizer = () => {
@@ -106,7 +99,6 @@ export default defineComponent({
       data.set("url", store.url);
       data.set("logo", store.logo);
       data.set("name", store.name);
-      data.set("status", store.status);
 
       fetch("https://metasolution-alpha.herokuapp.com/api/v1/organizers", {
         method: "post",
@@ -130,7 +122,6 @@ export default defineComponent({
       store,
       createOrganizer,
       organizerTypeOptions,
-      statusOptions,
     };
   },
 });

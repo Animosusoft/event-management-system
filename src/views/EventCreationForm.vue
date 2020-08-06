@@ -120,7 +120,7 @@
               <b-form-group id="eventImage_group" label="Event Image" label-for="eventImage">
                 <b-form-file
                   accept="image/*"
-                  @change="onSelectImage"
+                  v-model="form.eventImage"
                   :state="Boolean(form.eventImage)"
                   placeholder="Choose an image ..."
                   drop-placeholder="Drop file here..."
@@ -201,16 +201,14 @@ export default defineComponent({
       formdata.set("end_date", formstore.end);
       formdata.set("start_date", formstore.start);
       formdata.set("url", formstore.eventImage);
+      formdata.set("organizer_id", formstore.organizerID);
       formdata.set("description", formstore.eventDetails);
       formdata.set("event_type", formstore.eventType);
       await fetch("https://metasolution-alpha.herokuapp.com/api/v1/events", {
         method: "post",
         mode: "cors",
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${authstore.token}`,
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "*",
         },
         body: formdata,
       })
