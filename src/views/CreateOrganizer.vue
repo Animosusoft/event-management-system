@@ -3,12 +3,15 @@
     <BaseNav />
     <b-container class="py-5">
       <b-row align-h="center" no-gutters>
-        <b-modal id="modal" title="Success Message">
+        <b-modal id="modal" title="Success Message" ok-only>
           <p class="my-4">You have created an organizer successfully</p>
         </b-modal>
         <b-card>
           <b-card-body>
             <b-form id="create_organizer" @submit.prevent="createOrganizer">
+              <div v-if="organizerAlreadyExist" class="text-danger text-center text-monospace">
+                <b-card-text>organizer email or phone already exist</b-card-text>
+              </div>
               <b-form-group id="type_group" label="Organizer type" label-for="type">
                 <b-form-select
                   id="type"
@@ -78,13 +81,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent, ref } from "@vue/composition-api";
 import { organizerstore, authstore } from "../store/index";
 
 export default defineComponent({
   setup(props, { root: { $bvModal } }) {
     const name = "Create Organizer";
     const store = organizerstore;
+    const organizerAlreadyExist = ref(false);
 
     const organizerTypeOptions = [
       { value: "organization", text: "Organization Account" },
@@ -111,6 +115,8 @@ export default defineComponent({
         .then((responseFromServer) => {
           if (responseFromServer.status === 201) {
             $bvModal.show("modal");
+          } else if (responseFromServer.status === 400) {
+            organizerAlreadyExist.value = true;
           }
         })
         .catch((error) => {
@@ -122,6 +128,7 @@ export default defineComponent({
       store,
       createOrganizer,
       organizerTypeOptions,
+      organizerAlreadyExist,
     };
   },
 });

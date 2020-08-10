@@ -6,6 +6,9 @@
         <b-card>
           <b-card-body>
             <b-form id="create_event_form" @submit.prevent="submitForm">
+              <div v-if="eventExistAlready" class="text-danger text-monospace text-center">
+                <b-card-text>Same Event created at the same time and at the same location</b-card-text>
+              </div>
               <BaseInput
                 label="Event Title"
                 type="text"
@@ -144,7 +147,7 @@
 </template>
 
 <script lang="ts">
-import { onBeforeMount, defineComponent } from "@vue/composition-api";
+import { onBeforeMount, defineComponent, ref } from "@vue/composition-api";
 import { validationMixin } from "vuelidate";
 import { validationrules } from "../services/validations";
 import BaseInput from "../components/BaseInput.vue";
@@ -194,6 +197,8 @@ export default defineComponent({
       { value: "private", text: "A Private Event" },
     ];
 
+    const eventExistAlready = ref(false);
+
     const submitForm = async () => {
       const formdata = new FormData();
       formdata.set("event_title", formstore.eventTitle);
@@ -215,6 +220,8 @@ export default defineComponent({
         .then((responseFromServer) => {
           if (responseFromServer.status === 201) {
             $router.push({ path: "eventdetails" });
+          } else if (responseFromServer.status === 400) {
+            eventExistAlready.value = true;
           } else {
             responseFromServer.json().then((jsonServerResponse) => {
               console.log(jsonServerResponse);
@@ -242,6 +249,7 @@ export default defineComponent({
       onSelectImage,
       validationState,
       flatpickrconfig,
+      eventExistAlready,
     };
   },
 });
