@@ -5,7 +5,6 @@ interface OrganizerStore {
   logo: string;
   phone: string;
   email: string;
-  status: string;
 }
 
 export default OrganizerStore;

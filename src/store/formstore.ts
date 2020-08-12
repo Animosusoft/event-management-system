@@ -12,8 +12,8 @@ const formstore: Formdata = reactive({
   end: "",
   start: "",
   eventType: "",
+  organizerID: "",
   organizersDetails: [{}],
-  organizerID: 0,
   organizerName: ""
 });
 

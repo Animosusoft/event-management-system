@@ -6,6 +6,9 @@
         <b-card>
           <b-card-body>
             <b-form id="create_event_form" @submit.prevent="submitForm">
+              <div v-if="eventExistAlready" class="text-danger text-monospace text-center">
+                <b-card-text>Same Event created at the same time and at the same location</b-card-text>
+              </div>
               <BaseInput
                 label="Event Title"
                 type="text"
@@ -120,7 +123,7 @@
               <b-form-group id="eventImage_group" label="Event Image" label-for="eventImage">
                 <b-form-file
                   accept="image/*"
-                  @change="onSelectImage"
+                  v-model="form.eventImage"
                   :state="Boolean(form.eventImage)"
                   placeholder="Choose an image ..."
                   drop-placeholder="Drop file here..."
@@ -144,7 +147,7 @@
 </template>
 
 <script lang="ts">
-import { onBeforeMount, defineComponent } from "@vue/composition-api";
+import { onBeforeMount, defineComponent, ref } from "@vue/composition-api";
 import { validationMixin } from "vuelidate";
 import { validationrules } from "../services/validations";
 import BaseInput from "../components/BaseInput.vue";
@@ -194,6 +197,8 @@ export default defineComponent({
       { value: "private", text: "A Private Event" },
     ];
 
+    const eventExistAlready = ref(false);
+
     const submitForm = async () => {
       const formdata = new FormData();
       formdata.set("event_title", formstore.eventTitle);
@@ -201,22 +206,22 @@ export default defineComponent({
       formdata.set("end_date", formstore.end);
       formdata.set("start_date", formstore.start);
       formdata.set("url", formstore.eventImage);
+      formdata.set("organizer_id", formstore.organizerID);
       formdata.set("description", formstore.eventDetails);
       formdata.set("event_type", formstore.eventType);
       await fetch("https://metasolution-alpha.herokuapp.com/api/v1/events", {
         method: "post",
         mode: "cors",
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${authstore.token}`,
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "*",
         },
         body: formdata,
       })
         .then((responseFromServer) => {
           if (responseFromServer.status === 201) {
             $router.push({ path: "eventdetails" });
+          } else if (responseFromServer.status === 400) {
+            eventExistAlready.value = true;
           } else {
             responseFromServer.json().then((jsonServerResponse) => {
               console.log(jsonServerResponse);
@@ -244,6 +249,7 @@ export default defineComponent({
       onSelectImage,
       validationState,
       flatpickrconfig,
+      eventExistAlready,
     };
   },
 });

@@ -10,8 +10,7 @@ const organizerstore: OrganizerStore = reactive({
   url: "",
   logo: "",
   phone: "",
-  email: "",
-  status: ""
+  email: ""
 });
 
 export default organizerstore;

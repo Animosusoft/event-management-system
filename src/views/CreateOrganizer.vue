@@ -3,12 +3,15 @@
     <BaseNav />
     <b-container class="py-5">
       <b-row align-h="center" no-gutters>
-        <b-modal id="modal" title="Success Message">
+        <b-modal id="modal" title="Success Message" ok-only>
           <p class="my-4">You have created an organizer successfully</p>
         </b-modal>
         <b-card>
           <b-card-body>
             <b-form id="create_organizer" @submit.prevent="createOrganizer">
+              <div v-if="organizerAlreadyExist" class="text-danger text-center text-monospace">
+                <b-card-text>organizer email or phone already exist</b-card-text>
+              </div>
               <b-form-group id="type_group" label="Organizer type" label-for="type">
                 <b-form-select
                   id="type"
@@ -36,12 +39,13 @@
                 ></b-form-input>
               </b-form-group>
               <b-form-group id="logo_group" label="logo" label-for="logo">
-                <b-form-input
+                <b-form-file
                   id="logo"
+                  accept="image/*"
                   v-model="store.logo"
-                  type="text"
-                  placeholder="eg.mokoshiw.png"
-                ></b-form-input>
+                  :state="Boolean(store.logo)"
+                  placeholder="select the logo"
+                ></b-form-file>
               </b-form-group>
               <b-form-group id="phone_group" label="Phone number" label-for="phone">
                 <b-form-input
@@ -61,9 +65,6 @@
                   required
                 ></b-form-input>
               </b-form-group>
-              <b-form-group id="status_group" label="Organizer status" label-for="status">
-                <b-form-select id="status" v-model="store.status" :options="statusOptions" required></b-form-select>
-              </b-form-group>
               <b-btn
                 type="submit"
                 size="lg"
@@ -80,22 +81,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent, ref } from "@vue/composition-api";
 import { organizerstore, authstore } from "../store/index";
 
 export default defineComponent({
   setup(props, { root: { $bvModal } }) {
     const name = "Create Organizer";
     const store = organizerstore;
+    const organizerAlreadyExist = ref(false);
 
     const organizerTypeOptions = [
-      { value: "organization", text: "Organization" },
-      { value: "person", text: "Personal" },
-    ];
-
-    const statusOptions = [
-      { value: "active", text: "active" },
-      { value: "not-active", text: "not Active" },
+      { value: "organization", text: "Organization Account" },
+      { value: "individual", text: "Individual Account" },
     ];
 
     const createOrganizer = () => {
@@ -106,7 +103,6 @@ export default defineComponent({
       data.set("url", store.url);
       data.set("logo", store.logo);
       data.set("name", store.name);
-      data.set("status", store.status);
 
       fetch("https://metasolution-alpha.herokuapp.com/api/v1/organizers", {
         method: "post",
@@ -119,6 +115,8 @@ export default defineComponent({
         .then((responseFromServer) => {
           if (responseFromServer.status === 201) {
             $bvModal.show("modal");
+          } else if (responseFromServer.status === 400) {
+            organizerAlreadyExist.value = true;
           }
         })
         .catch((error) => {
@@ -130,7 +128,7 @@ export default defineComponent({
       store,
       createOrganizer,
       organizerTypeOptions,
-      statusOptions,
+      organizerAlreadyExist,
     };
   },
 });
